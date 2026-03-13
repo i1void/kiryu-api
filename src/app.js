@@ -1,12 +1,13 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 
 app.use(express.json());
-app.use("/public", express.static("public"));
+app.use("/public", express.static(path.join(__dirname, "../public")));
 
 // Docs
 app.get("/docs", (req, res) => {
-  res.sendFile("index.html", { root: "public" });
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 // Routes
