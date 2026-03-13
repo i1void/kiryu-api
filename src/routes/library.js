@@ -2,12 +2,12 @@ const express = require("express");
 const router = express.Router();
 const fetcher = require("../utils/fetcher");
 
-// GET /api/latest?page=1
+// GET /api/library?page=1
 router.get("/", async (req, res) => {
   const page = req.query.page || 1;
   try {
     const { data } = await fetcher.get("/wp-json/wp/v2/manga", {
-      params: { orderby: "modified", order: "desc", per_page: 20, page },
+      params: { "manga-status": 8684, per_page: 20, page },
     });
 
     const result = data.map((manga) => ({
@@ -17,7 +17,6 @@ router.get("/", async (req, res) => {
       url: manga.link,
       thumbnail: manga.thumbnail || manga.featured_image_url || "",
       modified: manga.modified,
-      status: manga.status,
     }));
 
     res.json({ page: Number(page), results: result });
