@@ -1,0 +1,328 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kiryuu API",
+    "version": "1.0.0",
+    "description": "Unofficial REST API for kiryuu.to"
+  },
+  "servers": [
+    {
+      "url": "https://your-vercel-url.vercel.app",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local"
+    }
+  ],
+  "paths": {
+    "/api/latest": {
+      "get": {
+        "summary": "Latest updated manga",
+        "description": "Mengambil daftar manga yang baru diupdate, diurutkan berdasarkan tanggal modifikasi terbaru.",
+        "tags": ["Manga"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Halaman ke-n (default: 1)",
+            "required": false,
+            "schema": { "type": "integer", "example": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "page": 1,
+                  "results": [
+                    {
+                      "id": 297105,
+                      "title": "Solo Max-Level Newbie",
+                      "slug": "solo-max-level-newbie",
+                      "url": "https://v1.kiryuu.to/manga/solo-max-level-newbie/",
+                      "thumbnail": "https://v1.kiryuu.to/wp-content/uploads/...",
+                      "modified": "2025-10-27T11:45:41",
+                      "status": "publish"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/popular": {
+      "get": {
+        "summary": "Popular manga",
+        "description": "Mengambil daftar manga populer. Data di-scrape dari HTML response.",
+        "tags": ["Manga"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "results": [
+                    {
+                      "title": "Martial Peak",
+                      "slug": "martial-peak",
+                      "url": "https://v1.kiryuu.to/manga/martial-peak/",
+                      "thumbnail": "https://v1.kiryuu.to/wp-content/uploads/...",
+                      "latestChapter": "Chapter 3862",
+                      "status": "Ongoing",
+                      "rating": "7.6",
+                      "views": "37.1M",
+                      "bookmarks": "842",
+                      "synopsis": "Perjalanan ke puncak bela diri..."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/library": {
+      "get": {
+        "summary": "Manga library (ongoing)",
+        "description": "Mengambil semua manga dengan status ongoing.",
+        "tags": ["Manga"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Halaman ke-n (default: 1)",
+            "required": false,
+            "schema": { "type": "integer", "example": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "page": 1,
+                  "results": [
+                    {
+                      "id": 12345,
+                      "title": "Manga Title",
+                      "slug": "manga-title",
+                      "url": "https://v1.kiryuu.to/manga/manga-title/",
+                      "thumbnail": "https://v1.kiryuu.to/wp-content/uploads/...",
+                      "modified": "2025-01-01T00:00:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/genres": {
+      "get": {
+        "summary": "List semua genre",
+        "description": "Mengambil seluruh daftar genre yang tersedia beserta ID-nya.",
+        "tags": ["Genre"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "results": [
+                    { "id": 1, "name": "Action", "slug": "action", "count": 320 },
+                    { "id": 2, "name": "Romance", "slug": "romance", "count": 210 }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search": {
+      "get": {
+        "summary": "Cari manga",
+        "description": "Mencari manga berdasarkan keyword. Support format: spasi, tanda hubung (-), plus (+), underscore (_).",
+        "tags": ["Manga"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Keyword pencarian. Contoh: one-piece, one+piece, one piece",
+            "required": true,
+            "schema": { "type": "string", "example": "one-piece" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "query": "one piece",
+                  "results": [
+                    {
+                      "id": 999,
+                      "title": "One Piece",
+                      "slug": "one-piece",
+                      "url": "https://v1.kiryuu.to/manga/one-piece/",
+                      "thumbnail": "https://v1.kiryuu.to/wp-content/uploads/...",
+                      "modified": "2025-01-01T00:00:00"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query parameter q tidak diisi",
+            "content": {
+              "application/json": {
+                "example": { "error": "Query parameter 'q' is required" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/manga/{id}": {
+      "get": {
+        "summary": "Detail manga",
+        "description": "Mengambil detail lengkap satu manga berdasarkan ID.",
+        "tags": ["Manga"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID manga",
+            "required": true,
+            "schema": { "type": "integer", "example": 297105 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 297105,
+                  "title": "Solo Max-Level Newbie",
+                  "slug": "solo-max-level-newbie",
+                  "url": "https://v1.kiryuu.to/manga/solo-max-level-newbie/",
+                  "thumbnail": "https://v1.kiryuu.to/wp-content/uploads/...",
+                  "synopsis": "<p>Sinopsis manga...</p>",
+                  "status": "publish",
+                  "genres": [1, 5, 12],
+                  "author": "",
+                  "modified": "2025-10-27T11:45:41"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/manga/{id}/chapters": {
+      "get": {
+        "summary": "List chapter manga",
+        "description": "Mengambil seluruh daftar chapter dari satu manga.",
+        "tags": ["Chapter"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID manga",
+            "required": true,
+            "schema": { "type": "integer", "example": 297105 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mangaId": "297105",
+                  "chapters": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/manga/{id}/chapters/{chapterId}": {
+      "get": {
+        "summary": "Gambar halaman chapter",
+        "description": "Mengambil semua URL gambar dari sebuah chapter. Membutuhkan slug manga dan nomor chapter.",
+        "tags": ["Chapter"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID manga",
+            "required": true,
+            "schema": { "type": "integer", "example": 297105 }
+          },
+          {
+            "name": "chapterId",
+            "in": "path",
+            "description": "ID chapter",
+            "required": true,
+            "schema": { "type": "integer", "example": 297105 }
+          },
+          {
+            "name": "slug",
+            "in": "query",
+            "description": "Slug manga",
+            "required": true,
+            "schema": { "type": "string", "example": "solo-max-level-newbie" }
+          },
+          {
+            "name": "n",
+            "in": "query",
+            "description": "Nomor chapter",
+            "required": true,
+            "schema": { "type": "string", "example": "00" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "title": "Solo Max-Level Newbie Chapter 00 - Kiryuu ID",
+                  "canonical": "https://v1.kiryuu.to/manga/solo-max-level-newbie/chapter-00.297105/",
+                  "totalPages": 7,
+                  "images": [
+                    "https://v2.yuucdn.net/wp-content/uploads/S/Solo Max-Level Newbie Kiryuu/Chapter 00/000.jpg",
+                    "https://v2.yuucdn.net/wp-content/uploads/S/Solo Max-Level Newbie Kiryuu/Chapter 00/002.jpg"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter slug atau n tidak diisi",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Query 'slug' (manga slug) dan 'n' (chapter number) wajib diisi"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
