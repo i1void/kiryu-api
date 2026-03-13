@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fetcher = require("../utils/fetcher");
 const { parseChapterImages } = require("../scrapers/chapterScraper");
+const { parseChapterList } = require("../scrapers/chapterListScraper");
 
 // GET /api/manga/:id
 router.get("/:id", async (req, res) => {
@@ -37,12 +38,12 @@ router.get("/:id/chapters", async (req, res) => {
       params: { manga_id: id, page: 1, action: "chapter_list" },
     });
 
-    // Response bisa berupa array atau HTML, handle keduanya
-    if (Array.isArray(data)) {
-      return res.json({ mangaId: id, chapters: data });
+    if (typeof data === "string") {
+      const chapters = parseChapterList(data);
+      return res.json({ mangaId: id, total: chapters.length, chapters });
     }
 
-    res.json({ mangaId: id, raw: data });
+    res.json({ mangaId: id, total: data.length, chapters: data });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
