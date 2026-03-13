@@ -2,6 +2,12 @@ const express = require("express");
 const app = express();
 
 app.use(express.json());
+app.use("/public", express.static("public"));
+
+// Docs
+app.get("/docs", (req, res) => {
+  res.sendFile("index.html", { root: "public" });
+});
 
 // Routes
 app.use("/api/latest", require("./routes/latest"));
