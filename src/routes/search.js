@@ -4,8 +4,9 @@ const fetcher = require("../utils/fetcher");
 
 // GET /api/search?q=naruto
 router.get("/", async (req, res) => {
-  const q = req.query.q;
-  if (!q) return res.status(400).json({ error: "Query parameter 'q' is required" });
+  const raw = req.query.q;
+  if (!raw) return res.status(400).json({ error: "Query parameter 'q' is required" });
+  const q = raw.replace(/[-+_]+/g, " ").trim();
 
   try {
     const { data } = await fetcher.get("/wp-json/wp/v2/manga", {
