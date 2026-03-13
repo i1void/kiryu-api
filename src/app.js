@@ -10,10 +10,15 @@ app.get("/docs", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
+// Spec
+app.get("/api/spec", (req, res) => {
+  res.json(require("../public/settings.json"));
+});
+
 // Routes
 app.use("/api/latest", require("./routes/latest"));
 app.use("/api/popular", require("./routes/popular"));
-app.use("/api/library", require("./routes/library"));
+app.use("/api/ongoing", require("./routes/library"));
 app.use("/api/genres", require("./routes/genres"));
 app.use("/api/search", require("./routes/search"));
 app.use("/api/manga", require("./routes/manga"));
@@ -25,7 +30,7 @@ app.get("/", (req, res) => {
     endpoints: [
       "GET /api/latest?page=1",
       "GET /api/popular",
-      "GET /api/library?page=1",
+      "GET /api/ongoing?page=1",
       "GET /api/genres",
       "GET /api/search?q=naruto",
       "GET /api/manga/:id",
