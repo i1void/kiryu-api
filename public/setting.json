@@ -5,16 +5,7 @@
     "version": "1.0.0",
     "description": "Unofficial REST API for kiryuu.to"
   },
-  "servers": [
-    {
-      "url": "https://your-vercel-url.vercel.app",
-      "description": "Production"
-    },
-    {
-      "url": "http://localhost:3000",
-      "description": "Local"
-    }
-  ],
+  "servers": [],
   "paths": {
     "/api/latest": {
       "get": {
@@ -87,9 +78,9 @@
         }
       }
     },
-    "/api/library": {
+    "/api/ongoing": {
       "get": {
-        "summary": "Manga library (ongoing)",
+        "summary": "Manga ongoing",
         "description": "Mengambil semua manga dengan status ongoing.",
         "tags": ["Manga"],
         "parameters": [
