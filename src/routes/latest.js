@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
   const page = req.query.page || 1;
   try {
     const { data } = await fetcher.get("/wp-json/wp/v2/manga", {
-      params: { orderby: "modified", order: "desc", per_page: 20, page },
+      params: { orderby: "modified", order: "desc", per_page: 20, page, _embed: true },
     });
 
     const result = data.map((manga) => ({
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
       title: manga.title?.rendered || "",
       slug: manga.slug,
       url: manga.link,
-      thumbnail: manga.thumbnail || manga.featured_image_url || "",
+      thumbnail: manga._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
       modified: manga.modified,
       status: manga.status,
     }));

@@ -7,14 +7,16 @@ const { parseChapterImages } = require("../scrapers/chapterScraper");
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const { data } = await fetcher.get(`/wp-json/wp/v2/manga/${id}`);
+    const { data } = await fetcher.get(`/wp-json/wp/v2/manga/${id}`, {
+      params: { _embed: true },
+    });
 
     res.json({
       id: data.id,
       title: data.title?.rendered || "",
       slug: data.slug,
       url: data.link,
-      thumbnail: data.thumbnail || data.featured_image_url || "",
+      thumbnail: data._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
       synopsis: data.content?.rendered || "",
       status: data.status,
       genres: data.genre || [],

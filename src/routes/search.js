@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
 
   try {
     const { data } = await fetcher.get("/wp-json/wp/v2/manga", {
-      params: { search: q },
+      params: { search: q, _embed: true },
     });
 
     const result = data.map((manga) => ({
@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
       title: manga.title?.rendered || "",
       slug: manga.slug,
       url: manga.link,
-      thumbnail: manga.thumbnail || manga.featured_image_url || "",
+      thumbnail: manga._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
       modified: manga.modified,
     }));
 
