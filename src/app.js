@@ -12,7 +12,9 @@ app.get("/docs", (req, res) => {
 
 // Spec
 app.get("/api/spec", (req, res) => {
-  res.json(require("../public/settings.json"));
+  const spec = require("../public/settings.json");
+  spec.servers = [{ url: `${req.protocol}://${req.get("host")}`, description: "Current" }];
+  res.json(spec);
 });
 
 // Routes
